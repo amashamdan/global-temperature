@@ -1,4 +1,21 @@
 body {
+	background-image: url("images/wall1.jpg");
+	background-attachment: fixed;
+	background-size: cover;
 	font-family: 'PT Sans', sans-serif;	
+	text-align: center;
 }
 
+#chart-area {
+	margin: 50px 0 0 0;
+}
+
+.footer {
+	font-size: 0.75em;
+	text-align: left;
+	color: white;
+	& a {
+		color: white;
+		text-decoration: none;
+	}
+}

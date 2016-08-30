@@ -19,3 +19,11 @@ body {
 		text-decoration: none;
 	}
 }
+
+.xAxis, .yAxis {
+	font-size: 0.75em;
+	& path,line {
+		fill: none;
+		stroke: #000000;
+	}
+}

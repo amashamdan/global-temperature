@@ -88,6 +88,21 @@ function plot(data) {
 		.attr("year", function(d) {
 			return d.year;
 		})
+
+	chart.append("text")
+		.attr("x", width / 2)
+		.attr("text-anchor", "middle")
+		.attr("y", height - padding / 2)
+		.attr("font-size", "1.2em")
+		.text("Year");
+
+	chart.append("text")
+		.attr("x", -height / 2)
+		.attr("text-anchor", "middle")
+		.attr("y", padding / 2)
+		.attr("font-size", "1.2em")
+		.attr("transform", "rotate(-90)")
+		.text("Month");
 }
 /*
 function addMonths(data) {

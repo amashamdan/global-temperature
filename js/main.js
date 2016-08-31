@@ -92,6 +92,13 @@ function plot(data) {
 	chart.append("text")
 		.attr("x", width / 2)
 		.attr("text-anchor", "middle")
+		.attr("y", padding / 2)
+		.attr("font-size", "1.4em")
+		.text("Monthly Global Surface Temperature Heat Map (Jan 1753 - Sep 2015)");
+
+	chart.append("text")
+		.attr("x", width / 2)
+		.attr("text-anchor", "middle")
 		.attr("y", height - padding / 2)
 		.attr("font-size", "1.2em")
 		.text("Year");
@@ -103,6 +110,20 @@ function plot(data) {
 		.attr("font-size", "1.2em")
 		.attr("transform", "rotate(-90)")
 		.text("Month");
+
+	chart.append("text")
+		.attr("x", padding)
+		.attr("text-anchor", "start")
+		.attr("y", height - padding / 3)
+		.attr("font-size", "0.9em")
+		.text("- Hover over the chart to see a points details.");
+
+	chart.append("text")
+		.attr("x", padding)
+		.attr("text-anchor", "start")
+		.attr("y", height - padding / 6)
+		.attr("font-size", "0.9em")
+		.text("- Variance is the deviation from an average measured temperature of 8.66 ℃ in the period of Jan 1951 and Dec 1980.");
 }
 /*
 function addMonths(data) {

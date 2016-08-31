@@ -12,7 +12,8 @@ $.ajax({
 })
 
 function plot(data) {
-	console.log(data);
+	console.log(data)
+	//data = addMonths(data);
 	var width = 1200;
 	var height = 600;
 	var padding = 100;
@@ -50,6 +51,14 @@ function plot(data) {
 					.ticks(d3.time.months)
 					.tickFormat(d3.time.format("%b"))//use %B to switch to full month name;
 
+	var colorScale = d3.scale.linear()
+						.domain([d3.min(data.monthlyVariance, function(d) {
+							return data.baseTemperature + d.variance;
+						}), d3.max(data.monthlyVariance, function(d) {
+							return data.baseTemperature + d.variance;
+						})])
+						.range([0,255]);
+
 	chart.append("g")
 		.attr("class", "yAxis")
 		.attr("transform", "translate(" + padding + ", 0)")
@@ -57,4 +66,57 @@ function plot(data) {
 		.selectAll(".tick text")
 		// The formula below to center month name in its interval regardless of the actual dimensions.
 		.attr("y", ((height - 2*padding)/12) / 2)
+
+	chart.selectAll("rect")
+		.data(data.monthlyVariance)
+		.enter()
+		.append("rect")
+		.attr("x", function(d, i) {
+			return xScale(d.year);
+		})
+		.attr("y", function(d) {
+			return padding + (d.month - 1) * ((height - 2*padding) / 12);
+			//return yScale(d.wordMonth);
+		})
+		.attr("width", (width - 2*padding) / (2015-1759))
+		.attr("height", (height - 2*padding) / 12)
+		.attr("fill", function(d) {
+
+			// Math.floor is important for the colors to appear.
+			return "rgb("+Math.floor(255-colorScale(data.baseTemperature - d.variance))+" ,"+Math.floor(colorScale(data.baseTemperature - d.variance)/2)+" ,"+Math.floor(colorScale(data.baseTemperature - d.variance))+" )";
+		})
+		.attr("year", function(d) {
+			return d.year;
+		})
 }
+/*
+function addMonths(data) {
+	for (var point in data.monthlyVariance) {
+		if (data.monthlyVariance[point].month == 1) {
+			data.monthlyVariance[point].wordMonth = "January"
+		} else if (data.monthlyVariance[point].month == 2) {
+			data.monthlyVariance[point].wordMonth = "Febreuary"
+		} else if (data.monthlyVariance[point].month == 3) {
+			data.monthlyVariance[point].wordMonth = "March"
+		} else if (data.monthlyVariance[point].month == 4) {
+			data.monthlyVariance[point].wordMonth = "April"
+		} else if (data.monthlyVariance[point].month == 5) {
+			data.monthlyVariance[point].wordMonth = "May"
+		} else if (data.monthlyVariance[point].month == 6) {
+			data.monthlyVariance[point].wordMonth = "June"
+		} else if (data.monthlyVariance[point].month == 7) {
+			data.monthlyVariance[point].wordMonth = "July"
+		} else if (data.monthlyVariance[point].month == 8) {
+			data.monthlyVariance[point].wordMonth = "August"
+		} else if (data.monthlyVariance[point].month == 9) {
+			data.monthlyVariance[point].wordMonth = "September"
+		} else if (data.monthlyVariance[point].month == 10) {
+			data.monthlyVariance[point].wordMonth = "October"
+		} else if (data.monthlyVariance[point].month == 11) {
+			data.monthlyVariance[point].wordMonth = "November"
+		} else if (data.monthlyVariance[point].month == 12) {
+			data.monthlyVariance[point].wordMonth = "December"
+		}
+	}
+	return data;
+}*/

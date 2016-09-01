@@ -105,7 +105,8 @@ function plot(data, color256) {
 		.attr("temperature", function(d) {
 			return data.baseTemperature + d.variance;
 		})
-		.attr("colorXX", function(d) {return colorScale(data.baseTemperature + d.variance)});
+		.attr("colorXX", function(d) {return colorScale(data.baseTemperature + d.variance)})
+		.attr("class", "dataRect");
 
 	chart.append("text")
 		.attr("x", width / 2)
@@ -218,7 +219,7 @@ function plot(data, color256) {
 		}
 	}
 
-	$("rect").hover(function(e){
+	$(".dataRect").hover(function(e){
 		if (infoClosed) {
 			infoWindow = chart.append("rect").attr("class", "infoWindow");
 			infoText1 = chart.append("text").attr("class", "infoWindow");
@@ -350,9 +351,9 @@ $("#changeColor").click(function() {
 	d3.select("#main-svg").remove();
 	color256 = !color256;
 	if (color256) {
-		$("#changeColor").html("Switch to 15 colors");
+		$("#changeColor").html("Switch to 15 gradients");
 	} else {
-		$("#changeColor").html("Switch to 256 colors");
+		$("#changeColor").html("Switch to 256 gradients");
 	}
 	plot(data, color256);
 })

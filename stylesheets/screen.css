@@ -36,11 +36,11 @@ body {
 
 /* Cursor turns to pointer when it is above a rectangle. */
 /* line 32, ../sass/screen.scss */
-rect {
+.dataRect {
   cursor: pointer;
 }
 /* line 34, ../sass/screen.scss */
-rect:hover {
+.dataRect:hover {
   fill: black;
 }
 

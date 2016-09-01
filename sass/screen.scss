@@ -29,7 +29,7 @@ body {
 }
 
 /* Cursor turns to pointer when it is above a rectangle. */
-rect {
+.dataRect {
 	cursor: pointer;
 	&:hover {
 		fill: black; //fill not background-color because this is svg.

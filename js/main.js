@@ -16,7 +16,7 @@ function plot(data) {
 	//data = addMonths(data);
 	var width = 1200;
 	var height = 600;
-	var padding = 100;
+	var padding = 70;
 	var chart = d3.select("#chart-area")
 					.append("svg")
 					.attr("width", width)
@@ -78,16 +78,25 @@ function plot(data) {
 			return padding + (d.month - 1) * ((height - 2*padding) / 12);
 			//return yScale(d.wordMonth);
 		})
-		.attr("width", (width - 2*padding) / (2015-1759))
+		.attr("width", (width - 2*padding) / (2015-1760))
 		.attr("height", (height - 2*padding) / 12)
 		.attr("fill", function(d) {
 
 			// Math.floor is important for the colors to appear.
-			return "rgb("+Math.floor(255-colorScale(data.baseTemperature - d.variance))+" ,"+Math.floor(colorScale(data.baseTemperature - d.variance)/2)+" ,"+Math.floor(colorScale(data.baseTemperature - d.variance))+" )";
+			return "rgb("+Math.floor(colorScale(data.baseTemperature + d.variance))+" ,100 ,"+Math.floor(255-colorScale(data.baseTemperature + d.variance))+" )";
 		})
 		.attr("year", function(d) {
 			return d.year;
 		})
+		.attr("month", function(d) {
+			return getMonth(d.month);
+		})
+		.attr("variance", function(d) {
+			return d.variance;
+		})
+		.attr("temperature", function(d) {
+			return data.baseTemperature + d.variance;
+		});
 
 	chart.append("text")
 		.attr("x", width / 2)
@@ -99,7 +108,7 @@ function plot(data) {
 	chart.append("text")
 		.attr("x", width / 2)
 		.attr("text-anchor", "middle")
-		.attr("y", height - padding / 2)
+		.attr("y", height - padding / 2.2)
 		.attr("font-size", "1.2em")
 		.text("Year");
 
@@ -123,36 +132,106 @@ function plot(data) {
 		.attr("text-anchor", "start")
 		.attr("y", height - padding / 6)
 		.attr("font-size", "0.9em")
-		.text("- Variance is the deviation from an average measured temperature of 8.66 ℃ in the period of Jan 1951 and Dec 1980.");
-}
-/*
-function addMonths(data) {
-	for (var point in data.monthlyVariance) {
-		if (data.monthlyVariance[point].month == 1) {
-			data.monthlyVariance[point].wordMonth = "January"
-		} else if (data.monthlyVariance[point].month == 2) {
-			data.monthlyVariance[point].wordMonth = "Febreuary"
-		} else if (data.monthlyVariance[point].month == 3) {
-			data.monthlyVariance[point].wordMonth = "March"
-		} else if (data.monthlyVariance[point].month == 4) {
-			data.monthlyVariance[point].wordMonth = "April"
-		} else if (data.monthlyVariance[point].month == 5) {
-			data.monthlyVariance[point].wordMonth = "May"
-		} else if (data.monthlyVariance[point].month == 6) {
-			data.monthlyVariance[point].wordMonth = "June"
-		} else if (data.monthlyVariance[point].month == 7) {
-			data.monthlyVariance[point].wordMonth = "July"
-		} else if (data.monthlyVariance[point].month == 8) {
-			data.monthlyVariance[point].wordMonth = "August"
-		} else if (data.monthlyVariance[point].month == 9) {
-			data.monthlyVariance[point].wordMonth = "September"
-		} else if (data.monthlyVariance[point].month == 10) {
-			data.monthlyVariance[point].wordMonth = "October"
-		} else if (data.monthlyVariance[point].month == 11) {
-			data.monthlyVariance[point].wordMonth = "November"
-		} else if (data.monthlyVariance[point].month == 12) {
-			data.monthlyVariance[point].wordMonth = "December"
+		.text("- Variance is the deviation from an average measured temperature of 8.86 ℃ in the period of Jan 1951 and Dec 1980.");
+
+	var infoClosed = true;
+	// should be declared here.
+	var infoWindow;
+	var infoText1;
+	var infoText2;
+	var infoText3;
+	var infoWindowWidth = 130;
+	var infoWindowHeight = 60;
+	$("rect").hover(function(e){
+		if (infoClosed) {
+			infoWindow = chart.append("rect").attr("class", "infoWindow");
+			infoText1 = chart.append("text").attr("class", "infoWindow");
+			infoText2 = chart.append("text").attr("class", "infoWindow");
+			infoText3 = chart.append("text").attr("class", "infoWindow");
+			infoClosed = false;
 		}
+		var xPosition = e.pageX - $("svg").offset().left;
+		var yPosition = e.pageY - $("svg").offset().top;
+
+		if (xPosition < infoWindowWidth + 10) {
+			xPosition = xPosition + infoWindowWidth + 20;
+		}
+
+		var temperature = $(this).attr("temperature");
+		var month = $(this).attr("month");
+		var year = $(this).attr("year");
+		var variance = $(this).attr("variance");
+
+		infoWindow.attr("width", infoWindowWidth)
+					.attr("height", infoWindowHeight)
+					.attr("x", xPosition - infoWindowWidth - 10 )
+					.attr("y", yPosition - infoWindowHeight - 10)
+					.attr("fill", "rgba(0, 0, 0, 0.7)")
+					.attr("rx", 10)
+					.attr("ry", 10);
+
+		infoText1.attr("x", xPosition - infoWindowWidth / 2 - 10 )
+					.attr("y", yPosition - infoWindowHeight / 1.5 - 10)
+					.attr("fill", "white")
+					.attr("text-anchor", "middle")
+					.attr("font-size", "0.8em")
+					.text(month + "-" + year);
+
+		infoText2.attr("x", xPosition - infoWindowWidth / 2 - 10 )
+					.attr("y", yPosition - infoWindowHeight / 2.3 - 10)
+					.attr("fill", "white")
+					.attr("text-anchor", "middle")
+					.attr("font-size", "0.8em")
+					// Nuber to convert temp to number instead of string so toFixed can be applied which rounds the number.
+					.text("Temperature: " + Number(temperature).toFixed(3) + " ℃");
+
+		infoText3.attr("x", xPosition - infoWindowWidth / 2 - 10 )
+					.attr("y", yPosition - infoWindowHeight / 6 - 10)
+					.attr("fill", "white")
+					.attr("text-anchor", "middle")
+					.attr("font-size", "0.8em")
+					// Nuber to convert temp to number instead of string so toFixed can be applied which rounds the number.
+					.text("Variance: " + variance + " ℃");
+
+
+
+		$(".infoWindow").fadeIn(300);
+
+	}, function(){
+		var isHovered = $('rect').filter(function() {
+			return $(this).is(":hover"); 
+		});
+		if (!isHovered[0]) {		
+			infoClosed = true;
+			d3.selectAll(".infoWindow").remove();
+		}
+	})
+}
+
+function getMonth(month) {
+	if (month == 1) {
+		return "January";
+	} else if (month == 2) {
+		return "Febreuary";
+	} else if (month == 3) {
+		return "March";
+	} else if (month == 4) {
+		return "April";
+	} else if (month == 5) {
+		return "May";
+	} else if (month == 6) {
+		return "June";
+	} else if (month == 7) {
+		return "July";
+	} else if (month == 8) {
+		return "August";
+	} else if (month == 9) {
+		return "September";
+	} else if (month == 10) {
+		return "October";
+	} else if (month == 11) {
+		return "November";
+	} else if (month == 12) {
+		return "December";
 	}
-	return data;
-}*/
+}

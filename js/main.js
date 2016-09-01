@@ -152,6 +152,8 @@ function plot(data, color256) {
 	var infoText3;
 	var infoWindowWidth = 130;
 	var infoWindowHeight = 60;
+	var heatLegendHeight = 20;
+	var heatLegendwidth = 25;
 
 	if (color256) {
 		/* from http://stackoverflow.com/questions/20837147/draw-a-d3-circle-with-gradient-colours */
@@ -162,9 +164,7 @@ function plot(data, color256) {
 						    .attr("y1", "0%")
 						    .attr("x2", "100%")
 						    .attr("y2", "0%")
-						    //.attr("spreadMethod", "pad");
 
-		// Define the gradient colors
 		gradient.append("svg:stop")
 		    .attr("offset", "0%")
 		    .attr("stop-color", "#0000ff")
@@ -175,12 +175,11 @@ function plot(data, color256) {
 		    .attr("stop-color", "#ff0000")
 		    .attr("stop-opacity", 1);
 
-		// Fill the circle with the gradient
 		var circle = chart.append('rect')
 		    .attr('x', 820)
 		    .attr('y', height- padding / 2)
-		    .attr('width', 375)
-		    .attr("height", 20)
+		    .attr('width', heatLegendwidth * 15)
+		    .attr("height", heatLegendHeight)
 		    .attr('fill', 'url(#gradient)');
 
 		chart.append("text")
@@ -191,7 +190,7 @@ function plot(data, color256) {
 				.text("Colder");
 
 		chart.append("text")
-				.attr("x", 820 + 15*25)
+				.attr("x", 820 + 15*heatLegendwidth)
 				.attr("y", height- padding / 2 + 30)
 				.attr("text-anchor", "end")
 				.attr("font-size", "0.7em")
@@ -200,16 +199,16 @@ function plot(data, color256) {
 	} else {
 		for (var color in colors15) {
 			chart.append("rect")
-				.attr("x", 820 + color*25)
+				.attr("x", 820 + color*heatLegendwidth)
 				.attr("y", height- padding / 2)
-				.attr("width", 25)
-				.attr("height", 20)
+				.attr("width", heatLegendwidth)
+				.attr("height", heatLegendHeight)
 				.attr("fill", function() {
 					return colors15[color];
 				})
 
 			chart.append("text")
-				.attr("x", 820 + color*25)
+				.attr("x", 820 + color*heatLegendwidth)
 				.attr("y", height- padding / 2 + 30)
 				.attr("text-anchor", "middle")
 				.attr("font-size", "0.7em")

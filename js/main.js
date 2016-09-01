@@ -1,4 +1,6 @@
 var color256 = false;
+var colors15 = ["#0E4C4F", "#30645C", "#527C69", "#759476", "#97AC83", "#BAC490", "#DCDC9D", "#FFF5AB", "#EDD595", "#DBB680", "#C9976B", "#B77756", "#A55841", "#93392C", "#821A17"];
+
 var data;
 var url = "https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/global-temperature.json";
 
@@ -86,7 +88,7 @@ function plot(data, color256) {
 		.attr("fill", function(d) {
 			// Math.floor is important for the colors to appear.
 			if (color256) {
-				return "rgb("+Math.floor(colorScale(data.baseTemperature + d.variance))+" ,100 ,"+Math.floor(255-colorScale(data.baseTemperature + d.variance))+" )";
+				return "rgb("+Math.floor(colorScale(data.baseTemperature + d.variance))+" ,0 ,"+Math.floor(255-colorScale(data.baseTemperature + d.variance))+" )";
 			} else {
 				return getColor(colorScale(data.baseTemperature + d.variance));
 			}
@@ -149,6 +151,73 @@ function plot(data, color256) {
 	var infoText3;
 	var infoWindowWidth = 130;
 	var infoWindowHeight = 60;
+
+	if (color256) {
+		/* from http://stackoverflow.com/questions/20837147/draw-a-d3-circle-with-gradient-colours */
+		var gradient = chart.append("svg:defs")
+						    .append("svg:linearGradient")
+						    .attr("id", "gradient")
+						    .attr("x1", "0%")
+						    .attr("y1", "0%")
+						    .attr("x2", "100%")
+						    .attr("y2", "0%")
+						    //.attr("spreadMethod", "pad");
+
+		// Define the gradient colors
+		gradient.append("svg:stop")
+		    .attr("offset", "0%")
+		    .attr("stop-color", "#0000ff")
+		    .attr("stop-opacity", 1);
+
+		gradient.append("svg:stop")
+		    .attr("offset", "100%")
+		    .attr("stop-color", "#ff0000")
+		    .attr("stop-opacity", 1);
+
+		// Fill the circle with the gradient
+		var circle = chart.append('rect')
+		    .attr('x', 820)
+		    .attr('y', height- padding / 2)
+		    .attr('width', 375)
+		    .attr("height", 20)
+		    .attr('fill', 'url(#gradient)');
+
+		chart.append("text")
+				.attr("x", 820)
+				.attr("y", height- padding / 2 + 30)
+				.attr("text-anchor", "start")
+				.attr("font-size", "0.7em")
+				.text("Colder");
+
+		chart.append("text")
+				.attr("x", 820 + 15*25)
+				.attr("y", height- padding / 2 + 30)
+				.attr("text-anchor", "end")
+				.attr("font-size", "0.7em")
+				.text("Warmer");
+
+	} else {
+		for (var color in colors15) {
+			chart.append("rect")
+				.attr("x", 820 + color*25)
+				.attr("y", height- padding / 2)
+				.attr("width", 25)
+				.attr("height", 20)
+				.attr("fill", function() {
+					return colors15[color];
+				})
+
+			chart.append("text")
+				.attr("x", 820 + color*25)
+				.attr("y", height- padding / 2 + 30)
+				.attr("text-anchor", "middle")
+				.attr("font-size", "0.7em")
+				.text(function() {
+					return (1.684 + (13.888 - 1.684) / 16 * color).toFixed(1);
+				})
+		}
+	}
+
 	$("rect").hover(function(e){
 		if (infoClosed) {
 			infoWindow = chart.append("rect").attr("class", "infoWindow");

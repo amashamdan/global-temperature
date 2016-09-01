@@ -20,6 +20,7 @@ body {
 	}
 }
 
+/* To control font of the axes and to show thin black lines for the axes and their ticks. */
 .xAxis, .yAxis {
 	font-size: 0.75em;
 	& path,line {
@@ -28,7 +29,7 @@ body {
 	}
 }
 
-/* Cursor turns to pointer when it is above a rectangle. */
+/* Cursor turns to pointer when it is above a data rectangle. */
 .dataRect {
 	cursor: pointer;
 	&:hover {
@@ -50,11 +51,13 @@ body {
 	height: 50px;
 	border-radius: 10px;
 	outline: none;
+	//Gives the button a physical appearence
 	box-shadow: 0 5px gray;
 	&:hover {
 		cursor: pointer;
 	}
 }
+// To animate button once clicked.
 #changeColor:active {
 	box-shadow: 0 1px gray;
 	transform: translateY(4px);

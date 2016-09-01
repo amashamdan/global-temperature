@@ -27,3 +27,15 @@ body {
 		stroke: #000000;
 	}
 }
+
+/* Cursor turns to pointer when it is above a rectangle. */
+rect {
+	cursor: pointer;
+	&:hover {
+		fill: black; //fill not background-color because this is svg.
+	}
+}
+
+.infoWindow {
+	display: none;
+}

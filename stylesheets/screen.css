@@ -33,3 +33,18 @@ body {
   fill: none;
   stroke: #000000;
 }
+
+/* Cursor turns to pointer when it is above a rectangle. */
+/* line 32, ../sass/screen.scss */
+rect {
+  cursor: pointer;
+}
+/* line 34, ../sass/screen.scss */
+rect:hover {
+  fill: black;
+}
+
+/* line 39, ../sass/screen.scss */
+.infoWindow {
+  display: none;
+}

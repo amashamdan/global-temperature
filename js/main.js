@@ -1,26 +1,29 @@
+var color256 = false;
+var data;
 var url = "https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/global-temperature.json";
 
 $.ajax({
 	url: url,
 	dataType: 'json',
 	success: function(data) {
-		plot(data);
+		window.data = data;
+		plot(data, color256);
 	},
 	error: function() {
 		alert("Couldn't retreive data, please try again later.");
 	}
 })
 
-function plot(data) {
-	console.log(data)
-	//data = addMonths(data);
+function plot(data, color256) {
 	var width = 1200;
 	var height = 600;
 	var padding = 70;
+	
 	var chart = d3.select("#chart-area")
 					.append("svg")
 					.attr("width", width)
 					.attr("height", height)
+					.attr("id", "main-svg")
 					.style("background-color", "rgba(256, 256, 256, 0.7)");
 
 	var xScale = d3.scale.linear()
@@ -81,9 +84,12 @@ function plot(data) {
 		.attr("width", (width - 2*padding) / (2015-1760))
 		.attr("height", (height - 2*padding) / 12)
 		.attr("fill", function(d) {
-
 			// Math.floor is important for the colors to appear.
-			return "rgb("+Math.floor(colorScale(data.baseTemperature + d.variance))+" ,100 ,"+Math.floor(255-colorScale(data.baseTemperature + d.variance))+" )";
+			if (color256) {
+				return "rgb("+Math.floor(colorScale(data.baseTemperature + d.variance))+" ,100 ,"+Math.floor(255-colorScale(data.baseTemperature + d.variance))+" )";
+			} else {
+				return getColor(colorScale(data.baseTemperature + d.variance));
+			}
 		})
 		.attr("year", function(d) {
 			return d.year;
@@ -96,7 +102,8 @@ function plot(data) {
 		})
 		.attr("temperature", function(d) {
 			return data.baseTemperature + d.variance;
-		});
+		})
+		.attr("colorXX", function(d) {return colorScale(data.baseTemperature + d.variance)});
 
 	chart.append("text")
 		.attr("x", width / 2)
@@ -208,6 +215,40 @@ function plot(data) {
 	})
 }
 
+function getColor(rgb) {
+	if (rgb >= 0 && rgb < 17) {
+		return "#0E4C4F";
+	} else if (rgb >= 17 && rgb < 34) {
+		return "#30645C";
+	} else if (rgb >= 34 && rgb < 51) {
+		return "#527C69";
+	} else if (rgb >= 51 && rgb < 68) {
+		return "#759476";
+	} else if (rgb >= 68 && rgb < 85) {
+		return "#97AC83";
+	} else if (rgb >= 85 && rgb < 102) {
+		return "#BAC490";
+	} else if (rgb >= 102 && rgb < 119) {
+		return "#DCDC9D";
+	} else if (rgb >= 119 && rgb < 136) {
+		return "#FFF5AB";
+	} else if (rgb >= 136 && rgb < 153) {
+		return "#EDD595";
+	} else if (rgb >= 153 && rgb < 170) {
+		return "#DBB680";
+	} else if (rgb >= 170 && rgb < 187) {
+		return "#C9976B";
+	} else if (rgb >= 187 && rgb < 204) {
+		return "#B77756";
+	} else if (rgb >= 204 && rgb < 221) {
+		return "#A55841";
+	} else if (rgb >= 221 && rgb < 238) {
+		return "#93392C";
+	}  else if (rgb >= 238 && rgb <= 255) {
+		return "#821A17";
+	}
+}
+
 function getMonth(month) {
 	if (month == 1) {
 		return "January";
@@ -235,3 +276,14 @@ function getMonth(month) {
 		return "December";
 	}
 }
+
+$("#changeColor").click(function() {
+	d3.select("#main-svg").remove();
+	color256 = !color256;
+	if (color256) {
+		$("#changeColor").html("Switch to 15 colors");
+	} else {
+		$("#changeColor").html("Switch to 256 colors");
+	}
+	plot(data, color256);
+})
